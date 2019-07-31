@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<cXML timestamp="2019-03-23" payloadID="1">
+    <Request deploymentMode="production">
+        <Order>
+            <OrderNumber>42e92406-4702-4a5a-80a8-5930d2080428</OrderNumber>
+            <OrderType>End User</OrderType>
+            <OrderDate>20190323</OrderDate>
+            <OrderTime>00:11:21</OrderTime>
+            <PromiseDate>20190323</PromiseDate>
+            <PlanYear>2019</PlanYear>
+            <PlanType></PlanType>
+            <MemberType></MemberType>
+            <WebtrendscampaignIDcode></WebtrendscampaignIDcode>
+            <CustomerID>MEDICALMUTUAL</CustomerID>
+            <CompanyName>Medical Mutual</CompanyName>
+            <UserEmail></UserEmail>
+            <OrderQuantity>1</OrderQuantity>
+            <ShippingMethod>Standard</ShippingMethod>
+            <OrderTotal>0.00</OrderTotal>
+            <PaymentMethod>Purchase Order</PaymentMethod>
+            <BillTo>
+                <BillToName>Sherry Ackman</BillToName>
+                <BillToCompany></BillToCompany>
+                <BillToAddress1>470 Garnette Rd</BillToAddress1>
+                <BillToAddress2></BillToAddress2>
+                <BillToAddress3>Summit</BillToAddress3>
+                <BillToAddress4></BillToAddress4>
+                <BillToCity>Akron</BillToCity>
+                <BillToState>Ohio</BillToState>
+                <BillToZip>44313</BillToZip>
+                <BillToRegion>Region 1</BillToRegion>
+                <BillToCountry>United States</BillToCountry>
+                <BillToAttention></BillToAttention>
+            </BillTo>
+            <ShipTo>
+                <ShipToName>Sherry Ackman</ShipToName>
+                <ShipToCompany></ShipToCompany>
+                <ShipToAddress1>470 Garnette Rd</ShipToAddress1>
+                <ShipToAddress2></ShipToAddress2>
+                <ShipToAddress3>Summit</ShipToAddress3>
+                <ShipToAddress4></ShipToAddress4>
+                <ShipToCity>Akron</ShipToCity>
+                <ShipToState>Ohio</ShipToState>
+                <ShipToZip>44313</ShipToZip>
+                <ShipToRegion>Region 1</ShipToRegion>
+                <ShipToCountry>United States</ShipToCountry>
+                <ShipToAttention>Sherry Ackman</ShipToAttention>
+            </ShipTo>
+            <Products>
+                <Product>
+                    <ProductCode>MMO ENROLLKIT</ProductCode>
+                    <EntryType>V</EntryType>
+                    <ProductName>Enrollment Kit</ProductName>
+                    <ProductDescription>Enrollment Kit</ProductDescription>
+                    <Quantity>1</Quantity>
+                </Product>
+            </Products>
+        </Order>
+        <Order>
+            <OrderNumber>005661ef-ad47-4a90-b5ba-f288e54a375a</OrderNumber>
+            <OrderType>SalesCallCenter</OrderType>
+            <OrderDate>20190323</OrderDate>
+            <OrderTime>00:11:21</OrderTime>
+            <PromiseDate>20190323</PromiseDate>
+            <PlanYear>2019</PlanYear>
+            <PlanType>MedMutual Advantage Choice HMO; MedMutual Advantage Classic HMO; MedMutual Advantage Plus HMO; MedMutual Advantage Preferred PPO; MedMutual Advantage Premium PPO; MedMutual Advantage Select PPO</PlanType>
+            <MemberType>Prospect</MemberType>
+            <WebtrendscampaignIDcode></WebtrendscampaignIDcode>
+            <CustomerID>MEDICALMUTUAL</CustomerID>
+            <CompanyName>Medical Mutual</CompanyName>
+            <UserEmail>linoteresa77@gmail.com</UserEmail>
+            <OrderQuantity>1</OrderQuantity>
+            <ShippingMethod>Standard</ShippingMethod>
+            <OrderTotal>0.00</OrderTotal>
+            <PaymentMethod>Purchase Order</PaymentMethod>
+            <BillTo>
+                <BillToName>Teresa Gipson</BillToName>
+                <BillToCompany></BillToCompany>
+                <BillToAddress1>622 searles st</BillToAddress1>
+                <BillToAddress2></BillToAddress2>
+                <BillToAddress3>Lucas</BillToAddress3>
+                <BillToAddress4>4194670980</BillToAddress4>
+                <BillToCity>toledo</BillToCity>
+                <BillToState>Ohio</BillToState>
+                <BillToZip>43610</BillToZip>
+                <BillToRegion>Region 1</BillToRegion>
+                <BillToCountry>United States</BillToCountry>
+                <BillToAttention></BillToAttention>
+            </BillTo>
+            <ShipTo>
+                <ShipToName>Teresa Gipson</ShipToName>
+                <ShipToCompany></ShipToCompany>
+                <ShipToAddress1>622 searles st</ShipToAddress1>
+                <ShipToAddress2></ShipToAddress2>
+                <ShipToAddress3>Lucas</ShipToAddress3>
+                <ShipToAddress4>4194670980</ShipToAddress4>
+                <ShipToCity>toledo</ShipToCity>
+                <ShipToState>Ohio</ShipToState>
+                <ShipToZip>43610</ShipToZip>
+                <ShipToRegion>Region 1</ShipToRegion>
+                <ShipToCountry>United States</ShipToCountry>
+                <ShipToAttention>Teresa Gipson</ShipToAttention>
+            </ShipTo>
+            <Products>
+                <Product>
+                    <ProductCode>MMO ENROLLKIT</ProductCode>
+                    <EntryType>V</EntryType>
+                    <ProductName>Enrollment Kit</ProductName>
+                    <ProductDescription>Enrollment Kit</ProductDescription>
+                    <Quantity>1</Quantity>
+                </Product>
+                <Product>
+                    <ProductCode>MMO UMG</ProductCode>
+                    <EntryType>V</EntryType>
+                    <ProductName>Understanding Medicare Guide</ProductName>
+                    <ProductDescription>Understanding Medicare Guide</ProductDescription>
+                    <Quantity>1</Quantity>
+                </Product>
+            </Products>
+        </Order>
+    </Request>
+</cXML>
