@@ -11,17 +11,17 @@ from numpy import select, where, ceil
 from pandas import ExcelWriter, read_excel, pivot_table, DataFrame, concat
 
 # Package Postage Cost
-PEK = 8.3
-MAG = 1.84
-OSB = 2.05
-OSB_PRS = 2.68
-UMG = 1.84
+PEK: float = 8.30
+MAG: float = 1.84
+OSB: float = 2.05
+OSB_PRS: float = 2.68
+UMG: float = 1.84
 # Reply Envelope Postage
-BRE = .64
+BRE: float = 0.64
 # Data Entry Charge
-DATA = .2
+DATA: float = 0.2
 # Fulfillment Charge
-CHARGE = .52
+CHARGE: float = 0.52
 
 
 def job_summary(job_frame):
