@@ -19,7 +19,7 @@ UMG: float = 1.84
 # Reply Envelope Postage
 BRE: float = 0.64
 # Data Entry Charge
-DATA: float = 0.2
+DATA: float = 0.20
 # Fulfillment Charge
 CHARGE: float = 0.52
 
@@ -50,13 +50,16 @@ def get_col(i):
     return x
 
 
-def get_row(i):
-    """ Starting row based on index
-    :param i:
-    :return x:
+def get_row(current_idx):
+    """ Starting row based on index.
+    :param current_idx:
+    :return current_row:
     """
-    y = int(ceil((i - 1) / 2)) * 8 + 3
-    return y
+    start_row = int(ceil((current_idx-1)/2))  # Formula to set 2 frames per row.
+    max_height = 8  # max height of DataFrame summary
+    spacer = 3      # initial start row & space between DataFrames
+    current_row = start_row * max_height + spacer
+    return current_row
 
 # -----------------------------------
 # -- Retrieve Files for Processing --
@@ -73,7 +76,7 @@ job_num = file[0][0:8]
 # -- Workbook & Worksheet Formatting --
 # ------------------------------------
 
-writer = ExcelWriter('{0} EOM.xlsx'.format(job_num), engine='xlsxwriter')
+writer = ExcelWriter(f'{job_num} EOM.xlsx', engine='xlsxwriter')
 wb = writer.book
 
 # Formatting for Excel worksheets
@@ -145,9 +148,9 @@ df.insert(4, 'TTL', df['Postage In'] + df['Postage Out'] +
 df.insert(5, 'Count', 1)
 
 # Add BRE Junk Envelopes Received
-junk = int(input("Total Junk Mail received: "))
-junk_pi = junk * BRE
-df = df.append({'Postage In': junk_pi, 'TTL': junk_pi, 'Count': junk},
+junk_mail = int(input("Total Junk Mail received: "))
+junk_post_in = junk_mail * BRE
+df = df.append({'Postage In': junk_post_in, 'TTL': junk_post_in, 'Count': junk_mail},
                ignore_index=True, sort=False)
 
 # Get column totals for placement at top of worksheet
@@ -179,13 +182,7 @@ ws_billing.conditional_format('A4:F4', {'type': 'no_blanks',
 ws_billing.write_row(2, 0, sums[0:5], fmt_sum_head)
 ws_billing.write(2, 5, sums[5], fmt_sum_count)
 ws_billing.write('E1', 'Total Junk Mail:')
-ws_billing.write('F1', junk)
+ws_billing.write('F1', junk_mail)
 ws_billing.write_formula('F2', '=F3-F1')
 
 wb.close()
-
-# Unused Code
-# format_cols = ['Postage In','Postage Out','Data Entry','Fulfillment Charge',
-#                'TTL']
-# DF_sum[format_cols]=DF_sum[format_cols].applymap('${:,.2f}'.format)
-# DF[format_cols]=DF[format_cols].applymap('${:,.2f}'.format)
