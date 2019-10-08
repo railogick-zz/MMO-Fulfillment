@@ -18,8 +18,17 @@ class ProcessFile:
         self.df.dropna(subset=['Full Name'], inplace=True)
         self.df.dropna(subset=['Address'], inplace=True)
 
+        # Process data
+        self.update()
+        self.remove_dupes()
+        self.separate_by_year()
+
     def update(self):
-        # Dictionary of Updates
+        """
+        Dictionary of Updates
+        Format - Column to Change:{Text to Change: New Text}
+        :return: N/A
+        """
         self.updates = {'Product Code': {'MMO ENROLLKIT': 'PEK',
                                          'MMO MGNFR': 'MAG',
                                          'MMO UMG': 'UMG',
@@ -39,30 +48,41 @@ class ProcessFile:
         self.df.replace(self.updates, inplace=True)
 
     def remove_dupes(self):
+        """
+        Clean data by converting to title case and trimming whitespaces before checking for duplicates.
+        Reset index and sort by 'Product Code'
+        :return: N/A
+        """
         fix_cols = ['Full Name', 'Address', 'City']
         self.df[fix_cols] = self.df[fix_cols].applymap(lambda x: x.title())
         self.df[fix_cols] = self.df[fix_cols].applymap(lambda x: re.sub(' +', ' ', x))
         self.df.drop_duplicates(['Full Name', 'Address'], inplace=True)
+
+        # Remove test records
+        self.df = self.df[~self.df['Full Name'].str.lower().str.contains('test')]
 
         # Start the index at 1 and sort by 'Product Code'
         self.df.reset_index(drop=True, inplace=True)
         self.df.index += 1
         self.df.sort_values(by='Product Code', inplace=True)
 
-    def return_df(self):
-        self.update()
-        self.remove_dupes()
-        return self.df
+    def separate_by_year(self):
+        """
+        Split DataFrame into 2 output files, grouped by 'PlanYear'
+        :return:
+        """
+        df_dict = dict(tuple(self.df.groupby(['PlanYear'])))
+        df_list = [df_dict[x] for x in df_dict]
+        for idx, frame in enumerate(df_list):
+            writer = ExcelWriter(df_list[idx].iloc[0]['PlanYear'].astype(str) + ' list.xlsx')
+            df_list[idx].to_excel(writer, index=False, header=True)
+            writer.save()
 
 
 def main():
     now = datetime.now()
-    filename = f'MMO_XMLImport_{now:%m%d%y}.xlsx'
+    filename = f'//Xmf-server/duke/Inter Office Mail/Medical Mutual Spreadsheets/MMO Fulfillment/_IN PROCESS/MMO_XML_ORDER {now:%m-%d-%Y}.xlsx'
     job = ProcessFile(filename)
-    df = job.return_df()
-    writer = ExcelWriter(f'{filename[:-5]}_rev.xlsx')
-    df.to_excel(writer, index=False)
-    writer.save()
 
 
 if __name__ == '__main__':

@@ -1,5 +1,5 @@
 # Python 3.7.2
-from os import path, getcwd, listdir, mkdir
+from os import path, listdir, mkdir, rename
 from shutil import move
 from xml.etree.ElementTree import parse
 from datetime import datetime
@@ -8,8 +8,12 @@ from pandas import ExcelWriter, DataFrame
 
 
 class XmlImport:
-    def __init__(self):
-        self.files = [p for p in listdir(getcwd()) if p.endswith(".xml")]
+    def __init__(self, xml_dir):
+        """
+        Parses xml data received from Medical Mutual of Ohio online information request site.
+        :rtype: object
+        """
+        self.xml_dir = xml_dir
         self.total_orders = []
         self.order = []
         self.df = DataFrame()
@@ -21,9 +25,14 @@ class XmlImport:
                             'PlanType': 'PlanType', 'MemberType': 'MemberType',
                             'WebtrendscampaignIDcode': 'WebtrendscampaignIDcode'}
 
+    @property
     def parse_xml(self):
-        for z in range(len(self.files)):
-            tree = parse(self.files[z])
+
+        for filename in listdir(self.xml_dir):
+            if not filename.endswith('.xml'):
+                continue
+            fullname = path.join(self.xml_dir, filename)
+            tree = parse(fullname)
             root = tree.getroot()
 
             # Get information from each order and add to total_orders
@@ -38,24 +47,27 @@ class XmlImport:
         # Create Data frame from completed total_orders
         self.df = DataFrame(self.total_orders, columns=self.header_dict.values())
 
-        now = datetime.now()
-        folder = f'XML {now:%m%d%y}'
-        if not path.exists(folder):
-            mkdir(folder)
-        for f in range(len(self.files)):
-            move(self.files[f], folder)
-
+        if not self.df.empty:
+            now = datetime.now()
+            folder = f'{self.xml_dir}/XML {now:%m%d%y}'
+            if not path.exists(folder):
+                mkdir(folder)
+            for f in listdir(self.xml_dir):
+                if f.endswith('.xml'):
+                    rename(f'{self.xml_dir}/{f}', f'{folder}/{f}')
         return self.df
 
 
 def main():
     now = datetime.now()
-    filename: str = f'MMO_XMLImport_{now:%m%d%y}.xlsx'
-    import_xml = XmlImport()
-    df = import_xml.parse_xml()
-    writer = ExcelWriter(filename)
-    df.to_excel(writer, index=False)
-    writer.save()
+    duke_xml_dir = '//Xmf-server/duke/Inter Office Mail/MMO XML Orders/'
+    file_out = f'MMO_XML_ORDER {now:%m-%d-%Y}.xlsx'
+    import_xml = XmlImport(duke_xml_dir)
+    df = import_xml.parse_xml
+    if not df.empty:
+        writer = ExcelWriter(file_out)
+        df.to_excel(writer, index=False)
+        writer.save()
 
 
 if __name__ == '__main__':
