@@ -59,12 +59,12 @@ class XmlImport:
 
 def main():
     now = datetime.now()
-    duke_xml_dir = '//Xmf-server/duke/Inter Office Mail/MMO XML Orders/'
-    file_out = f'MMO_XML_ORDER {now:%m-%d-%Y}.xlsx'
-    import_xml = XmlImport(duke_xml_dir)
+    xml_dir = '//Xmf-server/duke/Inter Office Mail/MMO XML Orders/'
+    xml_filename = f'MMO_XML_ORDER {now:%m-%d-%Y}.xlsx'
+    import_xml = XmlImport(xml_dir)
     df = import_xml.parse_xml
     if not df.empty:
-        writer = ExcelWriter(file_out, engine='xlsxwriter')
+        writer = ExcelWriter(xml_filename, engine='xlsxwriter')
         df.to_excel(writer, sheet_name='Sheet1', startrow=1, header=False, index=False)
         wb = writer.book
         ws = writer.sheets['Sheet1']
