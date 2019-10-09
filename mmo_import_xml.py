@@ -1,9 +1,7 @@
 # Python 3.7.2
 from os import path, listdir, mkdir, rename
-from shutil import move
 from xml.etree.ElementTree import parse
 from datetime import datetime
-
 from pandas import ExcelWriter, DataFrame
 
 
@@ -46,6 +44,7 @@ class XmlImport:
 
         # Create Data frame from completed total_orders
         self.df = DataFrame(self.total_orders, columns=self.header_dict.values())
+        self.df.insert(0, 'BRC_ID', value='')
 
         if not self.df.empty:
             now = datetime.now()
@@ -65,8 +64,21 @@ def main():
     import_xml = XmlImport(duke_xml_dir)
     df = import_xml.parse_xml
     if not df.empty:
-        writer = ExcelWriter(file_out)
-        df.to_excel(writer, index=False)
+        writer = ExcelWriter(file_out, engine='xlsxwriter')
+        df.to_excel(writer, sheet_name='Sheet1', startrow=1, header=False, index=False)
+        wb = writer.book
+        ws = writer.sheets['Sheet1']
+        rows = int(len(df.index))
+        ws.add_table(0, 0, rows, 17, {'columns': [{'header': 'BCM_ID'}, {'header': 'Full Name'}, {'header': 'Address'},
+                                                  {'header': 'City'}, {'header': 'State'}, {'header': 'Zip'},
+                                                  {'header': 'Zone'}, {'header': 'Product Code'},
+                                                  {'header': 'Product Desc'}, {'header': 'Drop Date'},
+                                                  {'header': 'Order Type'}, {'header': 'Order Date'},
+                                                  {'header': 'Email'}, {'header': 'Phone'},
+                                                  {'header': 'Bill To Region'}, {'header': 'PlanYear'},
+                                                  {'header': 'PlanType'}, {'header': 'MemberType'},
+                                                  {'header': 'WebtrendscampaignIDcode'},
+                                                  ]})
         writer.save()
 
 
