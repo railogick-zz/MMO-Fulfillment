@@ -1,14 +1,3 @@
-"""
-TODO: Check import dtype to verify string data.
-Steps:
-1. Import XML data - Done
-2. Output XML File - Done
-3. Import data entry - Done
-4. Output Do Not Contact - Done
-5. Append data to xml list - Done
-5. Cleanup data
-6. Output data file(s)
-"""
 from mmo_import_xml import XmlImport
 from mmo_fix_data import ProcessFile
 from gooey import Gooey, GooeyParser
@@ -64,7 +53,6 @@ def main():
         mmo_df = concat([mmo_df, df_contact, df_data],
                         ignore_index=True, sort=False).drop(columns=['Check Box']).fillna('')
 
-    print(mmo_df)
     job = ProcessFile(mmo_df)
 
 

@@ -78,6 +78,7 @@ class ProcessFile:
             wb = writer.book
             ws = writer.sheets['Sheet1']
             rows = int(len(df_list[idx].index))
+            df_list[idx].columns = map(str.upper, df_list[idx].columns)
             ws.write_row(0, 0, df_list[idx].columns.values)
             writer.save()
 
