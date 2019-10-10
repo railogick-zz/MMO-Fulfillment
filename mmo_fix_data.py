@@ -7,10 +7,9 @@ from pandas import set_option, read_excel, ExcelWriter
 
 
 class ProcessFile:
-    def __init__(self, filename):
+    def __init__(self, frame):
         set_option('precision', 0)
-        self.file = filename
-        self.df = read_excel(self.file)
+        self.df = frame
         self.updates = {}
 
         # Find and remove empty data
@@ -96,7 +95,8 @@ class ProcessFile:
 def main():
     now = datetime.now()
     filename = f'//Xmf-server/duke/Inter Office Mail/Medical Mutual Spreadsheets/MMO Fulfillment/_IN PROCESS/MMO_XML_ORDER {now:%m-%d-%Y}.xlsx'
-    job = ProcessFile(filename)
+    xml_df = read_excel(filename, dtype=str)
+    job = ProcessFile(xml_df)
 
 
 if __name__ == '__main__':
