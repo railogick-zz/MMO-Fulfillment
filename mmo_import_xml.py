@@ -61,6 +61,7 @@ class XmlImport:
             self.df.to_excel(writer, sheet_name='Sheet1', startrow=1, header=False, index=False)
             wb = writer.book
             ws = writer.sheets['Sheet1']
+            ws.set_columns('A:R', 18)
             rows = int(len(self.df.index))
             ws.add_table(0, 0, rows, 17,
                          {'columns': [{'header': 'BRC_ID'}, {'header': 'Full Name'}, {'header': 'Address'},

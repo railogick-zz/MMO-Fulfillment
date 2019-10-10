@@ -73,22 +73,12 @@ class ProcessFile:
         df_dict = dict(tuple(self.df.groupby(['PlanYear'])))
         df_list = [df_dict[x] for x in df_dict]
         for idx, frame in enumerate(df_list):
-            writer = ExcelWriter(df_list[idx].iloc[0]['PlanYear'].astype(str) + ' list.xlsx')
+            writer = ExcelWriter(str(df_list[idx].iloc[0]['PlanYear']) + ' list.xlsx')
             df_list[idx].to_excel(writer, index=False, header=True)
             wb = writer.book
             ws = writer.sheets['Sheet1']
             rows = int(len(df_list[idx].index))
-            ws.add_table(0, 0, rows, 17,
-                         {'columns': [{'header': 'BRC_ID'}, {'header': 'Full Name'}, {'header': 'Address'},
-                                      {'header': 'City'}, {'header': 'State'}, {'header': 'Zip'},
-                                      {'header': 'Zone'}, {'header': 'Product Code'},
-                                      {'header': 'Product Desc'}, {'header': 'Drop Date'},
-                                      {'header': 'Order Type'}, {'header': 'Order Date'},
-                                      {'header': 'Email'}, {'header': 'Phone'},
-                                      {'header': 'Bill To Region'}, {'header': 'PlanYear'},
-                                      {'header': 'PlanType'}, {'header': 'MemberType'},
-                                      {'header': 'WebtrendscampaignIDcode'},
-                                      ]})
+            ws.write_row(0, 0, df_list[idx].columns.values)
             writer.save()
 
 

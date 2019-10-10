@@ -65,8 +65,8 @@ def main():
                         ignore_index=True, sort=False).drop(columns=['Check Box']).fillna('')
 
     print(mmo_df)
-    filename = f'//Xmf-server/duke/Inter Office Mail/Medical Mutual Spreadsheets/MMO Fulfillment/_IN PROCESS/MMO_XML_ORDER {now:%m-%d-%Y}.xlsx'
-    job = ProcessFile(filename)
+    job = ProcessFile(mmo_df)
+
 
 if __name__ == '__main__':
     main()
