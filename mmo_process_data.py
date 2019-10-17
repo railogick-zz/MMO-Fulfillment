@@ -117,6 +117,7 @@ class ProcessFile:
                                        NaN: 'BRE',
                                        '': 'BRE'},
                         'Bill To Region': {'Region 1': '1',
+                                           'Region 1S': 'R1S',
                                            'Region 2': '2',
                                            NaN: '2',
                                            '': '2'},
