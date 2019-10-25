@@ -18,10 +18,13 @@ class XmlImport:
         Parses xml data received from Medical Mutual of Ohio online information request site.
         :rtype: object
         """
+        # Initialization of variables
         self.xml_dir = xml_dir
         self.total_orders = []
         self.order = []
         self.df = DataFrame()
+
+        # Definition of XML Data conversion to proper header names.
         self.header_dict = {'ShipToName': 'Full Name', 'ShipToAddress1': 'Address', 'ShipToCity': 'City',
                             'ShipToState': 'State', 'ShipToZip': 'Zip', 'ShipToAddress3': 'Zone',
                             'ProductCode': 'Product Code', 'ProductName': 'Product Desc', 'PromiseDate': 'Drop Date',
@@ -31,6 +34,9 @@ class XmlImport:
                             'WebtrendscampaignIDcode': 'WebtrendscampaignIDcode'}
 
     def parse_xml(self):
+        """
+        Open XML File and convert orders into a Dataframe.
+        """
         for filename in listdir(self.xml_dir):
             if not filename.endswith('.xml'):
                 continue
@@ -43,7 +49,7 @@ class XmlImport:
                 for x in range(len(self.header_dict)):
                     self.order.append(each.find(f'.//{list(self.header_dict.keys())[x]}').text)
 
-                # Add completed order to total_orders and reset order list
+                # Add completed order to total_orders and reset order list for next file.
                 self.total_orders.append(self.order)
                 self.order = []
 
@@ -51,6 +57,7 @@ class XmlImport:
         self.df = DataFrame(self.total_orders, columns=self.header_dict.values())
         self.df.insert(0, 'BRC_ID', value='')
 
+        # Check to see if files were processed, and if so, put them in a dated folder.
         if not self.df.empty:
             folder = f'{self.xml_dir}/XML {now:%m%d%y}'
             if not path.exists(folder):
@@ -60,25 +67,22 @@ class XmlImport:
                     rename(f'{self.xml_dir}/{f}', f'{folder}/{f}')
 
     def xml_to_xlsx(self):
+        """
+        Convert xml file into a spreadsheet.
+        """
         if not self.df.empty:
             xml_filename = f'MMO_XML_ORDER {now:%m-%d-%Y}.xlsx'
             writer = ExcelWriter(xml_filename, engine='xlsxwriter')
             self.df.to_excel(writer, sheet_name='Sheet1', startrow=1, header=False, index=False)
-            wb = writer.book
+            # wb = writer.book
             ws = writer.sheets['Sheet1']
             ws.set_column('A:R', 18)
             rows = int(len(self.df.index))
+            table_headers = []
+            for idx, val in enumerate(self.df.columns.values):
+                table_headers.append(dict(header=val))
             ws.add_table(0, 0, rows, 17,
-                         {'columns': [{'header': 'BRC_ID'}, {'header': 'Full Name'}, {'header': 'Address'},
-                                      {'header': 'City'}, {'header': 'State'}, {'header': 'Zip'},
-                                      {'header': 'Zone'}, {'header': 'Product Code'},
-                                      {'header': 'Product Desc'}, {'header': 'Drop Date'},
-                                      {'header': 'Order Type'}, {'header': 'Order Date'},
-                                      {'header': 'Email'}, {'header': 'Phone'},
-                                      {'header': 'Bill To Region'}, {'header': 'PlanYear'},
-                                      {'header': 'PlanType'}, {'header': 'MemberType'},
-                                      {'header': 'WebtrendscampaignIDcode'},
-                                      ]})
+                         {'columns': table_headers})
             writer.save()
 
 
@@ -155,7 +159,7 @@ class ProcessFile:
         for idx, frame in enumerate(df_list):
             writer = ExcelWriter(str(df_list[idx].iloc[0]['PlanYear']) + ' list.xlsx')
             df_list[idx].to_excel(writer, index=False, header=True)
-            wb = writer.book
+            # wb = writer.book
             ws = writer.sheets['Sheet1']
             # rows = int(len(df_list[idx].index))
             df_list[idx].columns = map(str.upper, df_list[idx].columns)
@@ -169,7 +173,7 @@ def output_contact_dnc(contact_df, dnc_df):
     filename = f'MMO CONTACT & DO NOT MAIL {now:%m-%d-%Y}.xlsx'
     writer = ExcelWriter(filename, engine='xlsxwriter')
     contact_df.to_excel(writer, sheet_name='Sheet1', startrow=2, header=False, index=False)
-    wb = writer.book
+    # wb = writer.book
     ws = writer.sheets['Sheet1']
     ws.set_column('A:H', 20)
     ws.write('A1', f'{now:%m/%d/%Y}')
@@ -206,9 +210,14 @@ def main():
         df_contact = data_entry_df.loc[data_entry_df['STATUS'] == 'CONTACT'].drop(columns=['STATUS']).reset_index(drop=True)
         df_dnc = data_entry_df.loc[data_entry_df['STATUS'] == 'DNC'].drop(columns=['STATUS']).reset_index(drop=True)
         df_data = data_entry_df.loc[data_entry_df['STATUS'] == 'LIST'].drop(columns=['STATUS']).reset_index(drop=True)
+
+        # output Contact List and Do Not Contact list to excel
         output_contact_dnc(df_contact, df_dnc)
+
+        # Add Contact List and Data List to main DataFrame.
         mmo_df = concat([mmo_df, df_contact, df_data],
                         ignore_index=True, sort=False).drop(columns=['Check Box']).fillna('')
+
     job = ProcessFile(mmo_df)
 
 
