@@ -93,8 +93,8 @@ class ProcessFile:
 
         # Find and remove empty data
         self.df.replace(' ', NaN, inplace=True)
-        self.df.dropna(subset=['Full Name'], inplace=True)
-        self.df.dropna(subset=['Address'], inplace=True)
+        self.df.dropna(subset=['Full Name', 'Address'], inplace=True)
+
         # Process data
         self.update()
         self.remove_dupes()
