@@ -16,6 +16,7 @@ MAG: float = 1.84
 OSB: float = 2.05
 OSB_PRS: float = 2.68
 UMG: float = 1.84
+
 # Reply Envelope Postage
 BRE: float = 0.64
 # Data Entry Charge
@@ -27,7 +28,7 @@ CHARGE: float = 0.52
 def job_summary(job_frame):
     """ Pivot Job to Count Product Codes """
     job_frame = pivot_table(job_frame,
-                            index=['PRODUCT_CODE'],
+                            index=['PRODUCT CODE'],
                             values=['ADDRESS'],
                             aggfunc=len,
                             margins=True)
@@ -125,23 +126,23 @@ for idx, item in enumerate(file):
     df = concat([df, temp], ignore_index=True, sort=False)
 
 # Determine OSB Prospect mailings
-df.loc[(df['PRODUCT_CODE'] == 'MMO OSB') &
-       (df['WEBTRENDS CAMPAIGN ID CODE'] == 'Prospect'),
-       'PRODUCT_CODE'] = 'MMO OSB PROSPECT'
+df.loc[(df['PRODUCT CODE'] == 'MMO OSB') &
+       (df['WEBTRENDSCAMPAIGNIDCODE'] == 'Prospect'),
+       'PRODUCT CODE'] = 'MMO OSB PROSPECT'
 
 # Assign values to product codes
 CONDITIONS = [
-    (df['PRODUCT_CODE'] == 'PEK'),
-    (df['PRODUCT_CODE'] == 'MMO MAG'),
-    (df['PRODUCT_CODE'] == 'MMO OSB'),
-    (df['PRODUCT_CODE'] == 'MMO OSB PROSPECT'),
-    (df['PRODUCT_CODE'] == 'UMG')]
+    (df['PRODUCT CODE'] == 'PEK'),
+    (df['PRODUCT CODE'] == 'MMO MAG'),
+    (df['PRODUCT CODE'] == 'MMO OSB'),
+    (df['PRODUCT CODE'] == 'MMO OSB PROSPECT'),
+    (df['PRODUCT CODE'] == 'UMG')]
 CHOICES = [PEK, MAG, OSB, OSB_PRS, UMG]
 
 # Create calculated columns
-df.insert(0, 'Postage In', where(df['ORDER_TYPE'] == 'BRE', BRE, 0))
+df.insert(0, 'Postage In', where(df['ORDER TYPE'] == 'BRE', BRE, 0))
 df.insert(1, 'Postage Out', select(CONDITIONS, CHOICES))
-df.insert(2, 'Data Entry', where(df['ORDER_TYPE'] == 'BRE', DATA, 0))
+df.insert(2, 'Data Entry', where(df['ORDER TYPE'] == 'BRE', DATA, 0))
 df.insert(3, 'Fulfillment Charge', CHARGE)
 df.insert(4, 'TTL', df['Postage In'] + df['Postage Out'] +
           df['Data Entry'] + df['Fulfillment Charge'])

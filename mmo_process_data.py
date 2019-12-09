@@ -74,7 +74,6 @@ class XmlImport:
             xml_filename = f'MMO_XML_ORDER {now:%m-%d-%Y}.xlsx'
             writer = ExcelWriter(xml_filename, engine='xlsxwriter')
             self.df.to_excel(writer, sheet_name='Sheet1', startrow=1, header=False, index=False)
-            # wb = writer.book
             ws = writer.sheets['Sheet1']
             ws.set_column('A:R', 18)
             rows = int(len(self.df.index))
@@ -99,7 +98,8 @@ class ProcessFile:
         # Process data
         self.update()
         self.remove_dupes()
-        self.separate_by_year()
+        self.output_single_year()
+        # self.separate_by_year()
 
     def update(self):
         """
@@ -125,7 +125,8 @@ class ProcessFile:
                                            'Region 2': '2',
                                            NaN: '2',
                                            '': '2'},
-                        'PlanYear': {NaN: str(datetime.now().year), '': str(datetime.now().year)}
+                        # 'PlanYear': {NaN: str(datetime.now().year), '': str(datetime.now().year)},
+                        'PlanYear': {NaN: '2020', '': '2020', '2019': '2020'}
                         }
 
         self.df.replace(self.updates, inplace=True)
@@ -139,7 +140,7 @@ class ProcessFile:
         fix_cols = ['Full Name', 'Address', 'City']
         self.df[fix_cols] = self.df[fix_cols].applymap(lambda x: x.title())
         self.df[fix_cols] = self.df[fix_cols].applymap(lambda x: re.sub(' +', ' ', x))
-        self.df.drop_duplicates(['Full Name', 'Address'], inplace=True)
+        self.df.drop_duplicates(subset=['Full Name', 'Address'], inplace=True)
 
         # Remove test records
         self.df = self.df[~self.df['Full Name'].str.lower().str.contains('test')]
@@ -147,7 +148,16 @@ class ProcessFile:
         # Start the index at 1 and sort by 'Product Code'
         self.df.reset_index(drop=True, inplace=True)
         self.df.index += 1
-        self.df.sort_values(by='Product Code', inplace=True)
+        self.df = self.df.sort_values(by='Product Code')
+
+    def output_single_year(self):
+        writer = ExcelWriter(str(self.df.iloc[0]['PlanYear']) + ' list.xlsx')
+        self.df.to_excel(writer, index=False, header=True)
+        ws = writer.sheets['Sheet1']
+        # rows = int(len(df_list[idx].index))
+        self.df.columns = map(str.upper, self.df.columns)
+        ws.write_row(0, 0, self.df.columns.values)
+        writer.save()
 
     def separate_by_year(self):
         """
@@ -159,7 +169,6 @@ class ProcessFile:
         for idx, frame in enumerate(df_list):
             writer = ExcelWriter(str(df_list[idx].iloc[0]['PlanYear']) + ' list.xlsx')
             df_list[idx].to_excel(writer, index=False, header=True)
-            # wb = writer.book
             ws = writer.sheets['Sheet1']
             # rows = int(len(df_list[idx].index))
             df_list[idx].columns = map(str.upper, df_list[idx].columns)
@@ -173,7 +182,6 @@ def output_contact_dnc(contact_df, dnc_df):
     filename = f'MMO CONTACT & DO NOT MAIL {now:%m-%d-%Y}.xlsx'
     writer = ExcelWriter(filename, engine='xlsxwriter')
     contact_df.to_excel(writer, sheet_name='Sheet1', startrow=2, header=False, index=False)
-    # wb = writer.book
     ws = writer.sheets['Sheet1']
     ws.set_column('A:H', 20)
     ws.write('A1', f'{now:%m/%d/%Y}')
